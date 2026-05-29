@@ -4,6 +4,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 import pybullet as p
+
+from panda3d.core import loadPrcFileData
+loadPrcFileData("", "prefer-parasite-buffer #t")
+
 from panda3d_kivy.mdapp import MDApp
 
 from direct.gui.DirectGui import *
@@ -2459,7 +2463,7 @@ class SurgicalSimulatorBimanual(SurgicalSimulatorBase):
 
 
 # ecm steoro size 1024x768
-app_cfg = ApplicationConfig(window_width=1850, window_height=1020)
+app_cfg = ApplicationConfig(window_width=1024, window_height=768)
 app = Application(app_cfg)
 open_scene(0)
 app.run()

@@ -66,7 +66,7 @@ left_grasper, right_grasper = get_robot_grasper_commands(command_data)
 
 # Time axes (relative to start)
 t_robot   = robot_data[:, 0]   - robot_data[0, 0]
-t_console = console_data[:, 0] - console_data[0, 0]
+t_console = console_data[:, 0] - robot_data[0, 0]
 max_time = max(t_robot[-1], t_console[-1])
 
 # ── Figure 1: Left arm ────────────────────────────────────────────────────────
