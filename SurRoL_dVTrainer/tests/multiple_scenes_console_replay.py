@@ -1,4 +1,5 @@
 import re,os
+os.environ["KIVY_NO_ARGS"] = "1"
 from kivy.lang import Builder
 import numpy as np
 import torch
@@ -52,6 +53,16 @@ from dVTrainer.data_collector import DataLogger
 from dVTrainer.random_experiment_new import user_num
 from dVTrainer.obs_controller import OBSController
 from scipy.spatial.transform import Rotation as R
+
+import argparse
+import tracemalloc
+import json
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--interval", type=int, default=5)
+parser.add_argument("--batch_size", type=int, default=50)
+parser.add_argument("--out_dir", type=str, default=None)
+args = parser.parse_args()
 
 app = None
 hint_printed = False
@@ -2138,6 +2149,20 @@ class SurgicalSimulatorBimanual(SurgicalSimulatorBase):
         self.demo = demo
         self.closed=True
         self.start_time = time.time()
+        
+        # storage
+        self.counter = 0
+        self.buffer = []
+        self.interval = args.interval
+        self.batch_size = args.batch_size
+        self.out_dir = args.out_dir
+        
+        # performance
+        self.loops = []
+        self.prev_loop = None
+        self.captures = []
+        self.writes = []
+        tracemalloc.start()
 
         self.psm1_action = np.zeros(env_type.ACTION_SIZE // 2)
         self.psm1_action[4] = jaw_states[0]
@@ -2214,6 +2239,44 @@ class SurgicalSimulatorBimanual(SurgicalSimulatorBase):
         self.video_recording = False
         self.obs.connect()
         #self.obs.start_recording()
+        
+    # helper for storing render data
+    def _flush_buffer(self):
+        if not self.buffer: return
+        dir = self.out_dir if self.out_dir else os.path.join(self.logger1.dir_path, "renders")
+        os.makedirs(dir, exist_ok=True)
+        t_write = time.time()
+        for frame_num, rgb, depth, seg in self.buffer:
+            np.save(os.path.join(dir, f"rgb_{frame_num:06d}.npy"), rgb)
+            np.save(os.path.join(dir, f"depth_{frame_num:06d}.npy"), depth)
+            np.save(os.path.join(dir, f"seg_{frame_num:06d}.npy"), seg)
+        self.writes.append(time.time() - t_write)
+        self.buffer = []
+        
+    # helper for gathering performance data
+    def _log_stats(self):
+        cur_mem, peak_mem = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        
+        def stats(arr):
+            if not arr: return {"min": None, "mean": None, "max": None}
+            return {"min": float(np.min(arr)), "mean": float(np.mean(arr)), "max": float(np.max(arr))}
+        
+        log = {
+            "args": {
+                "interval": self.interval,
+                "batch_size": self.batch_size
+            },
+            "stats": {
+                "loop_frequency": stats(self.loops),
+                "capture_overhead": stats(self.captures),
+                "write_overhead": stats(self.writes),
+                "memory_usage": peak_mem
+            }
+        }
+        log_path = os.path.join(self.logger1.dir_path, "stats.json")
+        with open(log_path, "w") as f:
+            json.dump(log, f)
 
     def _step_simulation_task(self, task):
         """Step simulation
@@ -2233,6 +2296,20 @@ class SurgicalSimulatorBimanual(SurgicalSimulatorBase):
                     viewMatrix=self.env._view_matrix,
                     projectionMatrix=self.env._proj_matrix)
                 p.setGravity(0,0,-10.0)
+                
+                # storing renders
+                t_loop = time.time()
+                if self.prev_loop is not None:
+                    self.loops.append(1/(t_loop - self.prev_loop))
+                self.prev_loop = t_loop
+                
+                self.counter += 1
+                if self.counter % self.interval == 0:
+                    t_capture = time.time()
+                    self.buffer.append((self.counter, rgb_pixels, depth_pixels, seg_pixels))
+                    self.captures.append(time.time() - t_capture)
+                    if len(self.buffer) >= self.batch_size: self._flush_buffer()
+                
                 #print(width, height, rgb_pixels.shape, depth_pixels.shape, seg_pixels.shape)
                 self.time = task.time
 
@@ -2452,6 +2529,8 @@ class SurgicalSimulatorBimanual(SurgicalSimulatorBase):
 
     def on_destroy(self):
         # !!! important
+        self._flush_buffer()
+        self._log_stats()
         self.console.close()
         self.network.stop()
         #self.generate_video()

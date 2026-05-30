@@ -1,2 +1,0 @@
-total_packets,received_packets,lost_packets,loss_rate,total_bursts,mean_burst_length,median_burst_length,max_burst_length,gap_packets,gap_rate,gap_bursts,mean_gap_burst_length,max_gap_burst_length,mean_delay_ms,median_delay_ms,min_delay_ms,max_delay_ms,p95_delay_ms,p99_delay_ms
-40838,40838,0,0.0,0,0,0,0,0,0.0,0,0,0,3.667881138627504,1.0499954223632812,0.025033950805664062,99.6255874633789,21.179211139678966,33.015315532684305
