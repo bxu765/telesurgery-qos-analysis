@@ -148,6 +148,9 @@ Aside from this data collection, in the future this data collection and performa
 
 ## 12. GenAI Use Disclosure
 (CC3): Claude was used to fix the `np.interp()` call and format the table with `tabulate()`.
+
 (CC5): Use of `tracemalloc` was motivated by suggestion of Claude.
+
 (CC7): Padding filenames with `:06d` was motivated by suggestion of Claude.
+
 (CC7): Claude was use to fix a conversion error with `numpy` and `json`.
