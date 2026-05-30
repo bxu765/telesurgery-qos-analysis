@@ -9,11 +9,13 @@ A line was added to fix an X11 BadMatch error stemming from the mismatch between
 Notably the simulator for the recorded replay was incredibly inconsistent. Oftentimes the claws failed to grab even a single peg. Since the replay stores the kinematics and not the actual positions of the claws, any difference exacerbates future differences. It is also likely the inconsistent framerate of the simulator increased the inconsistency.
 
 ## 4. Part 2: Data Visualization and Trajectory Comparison
+| Left Arm | Right Arm |
 |---|---|
-| ![](./figures/TRIAL/Figure_1.png) | ![(./figures/TRIAL/Figure_2.png) |
+| ![](./figures/TRIAL/Figure_1.png) | ![](./figures/TRIAL/Figure_2.png) |
 
 The most notable difference in the plots of the trajectories is a delay between the original and replayed data of about 15 seconds. This is due to the time between choosing Bi-Peg Transfer and running replay.py, which the plots do not account for. To fix this we can start the plotting of the PSM kinematics only once the replay packets are actually sent, getting rid of the idle time where no movement is tracked. The plotting was changed to normalize when both recordings started (CC2).
 
+| Left Arm | Right Arm |
 |---|---|
 | ![](./figures/TRIAL/Figure_1_2.png) | ![](./figures/TRIAL/Figure_2_2.png) |
 
