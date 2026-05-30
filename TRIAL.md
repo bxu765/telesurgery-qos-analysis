@@ -137,7 +137,7 @@ For the capture and write overhead, we can see that the write overhead dominates
 At a batch size of 50, memory usage peaks at around 57.575 MB. This is reasonable and is only a bit over the expected peak buffer size given a batch size of 50.
 
 ## 10. Tests
-In each part simulations were run roughly 5-10 times to test consistency of the performance. Although the actual simulation replays varied wildly, analysis in both parts 2 and 3 matched expected results fairly well.
+In each part simulations were run roughly 5-10 times to test consistency of the performance. Although the actual simulation replays varied wildly, analysis in both parts 2 and 3 matched expected results fairly well. Due to the scale of the changes, most of the validity tests were carried out informally. For example, sanity checks for loop time, overhead, positions, and function calls were printed to the terminal, then the prints were removed in the final iteration once issues were resolved.
 
 ## 11. Limitations and Future Improvements
 In part 2, in the future we can try further minimizing the difference between the robot and console. To attempt to minimize this, one approach that may be taken is to fix the physics tickrate for the input device and match it in the replay file as well as the simulation environment, which should reduce randomness from timing variability.
