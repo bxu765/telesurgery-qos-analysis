@@ -79,6 +79,8 @@ Unfortunately due to disk space limitations I wasn't able to create a table of d
 9. (multiple\_scenes\_console\_replay.py: Lines 2532-2533) Write performance log and any remaining frames in the buffer on destroy.
 
 ## 7. Usage Instructions
+In the setup CC1 was added to allow the simulation to work in my Ubuntu installation with my graphics card. If this causes errors, the change can be reverted. It should not affect any other process of running the simulation.
+
 Part 1  should be run exactly as described in the README. For part 2, install the following package before running `plot_kinematics_example.py`.
 ```
 pip install tabulate
