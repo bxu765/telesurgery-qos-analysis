@@ -69,6 +69,21 @@ t_robot   = robot_data[:, 0]   - robot_data[0, 0]
 t_console = console_data[:, 0] - robot_data[0, 0]
 max_time = max(t_robot[-1], t_console[-1])
 
+# ── Difference Quantified ─────────────────────────────────────────────────────
+
+from tabulate import tabulate
+
+arms, rows = {'Left':  [2, 3, 4, 7],'Right': [8, 9, 10, 13]}, []
+for arm in arms:
+    row = [arm]
+    for col in arms[arm]:
+        r_vals   = robot_data[:, col]   - robot_data[0, col]
+        c_vals   = console_data[:, col] - console_data[0, col]
+        row.append(np.mean(np.abs(r_vals - np.interp(t_robot, t_console, c_vals))))
+    rows.append(row)
+
+print(tabulate(rows, headers=["Arm", "X", "Y", "Z", "Yaw"], floatfmt=".5f"))
+
 # ── Figure 1: Left arm ────────────────────────────────────────────────────────
 fig, axs = plt.subplots(6, 1, figsize=(10, 14), sharex=True)
 fig.suptitle('Left Robotic Arm Trajectory (X, Y, Z, Yaw), Grasper, and Pedal vs Time')
