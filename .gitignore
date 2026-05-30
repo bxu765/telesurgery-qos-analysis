@@ -218,3 +218,5 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+/SurRoL_dVTrainer/tests/dVTrainer/Data/exp_data_15/
