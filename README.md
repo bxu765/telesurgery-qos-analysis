@@ -29,7 +29,7 @@ The `Mantis_Client` folder contains the dVTrainer surgeon console code, which ne
 
 For the simulation part, clone the `SurRoL_dVTrainer` and go into the folder
 ```
-git clone https://github.com/UVA-DSA/telesurgery-qos-analysis.git
+git clone git@github.com:bxu765/telesurgery-qos-analysis.git
 cd telesurgery-qos-analysis/SurRoL_dVTrainer/
 ```
 Create and activate conda environment 
