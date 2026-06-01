@@ -24,6 +24,9 @@ The experiments involved performing the Peg Transfer task under **four primary n
 ### How to run the code
 #### Computer System Requirements
 Ubuntu 20.04.6 LTS
+
+Requires [OpenHaptics drivers](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://support.3dsystems.com/s/article/OpenHaptics-for-Linux-Developer-Edition-v34&ved=2ahUKEwj-wKPVk-eUAxUPKlkFHQTIIhsQFnoECA0QAQ&usg=AOvVaw0aaZCuQXWzy2FcQLpZXik0) and requisite packages required for the original repository (cmake, libcrypt, libcurses, conda, etc.)
+
 #### Installation
 The `Mantis_Client` folder contains the dVTrainer surgeon console code, which needs to be installed and run with the device.
 
